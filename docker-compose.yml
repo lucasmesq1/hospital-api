@@ -1,0 +1,33 @@
+# Sobe o banco sozinho:      docker compose up -d db
+# Sobe banco + aplicação:    docker compose up --build
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: hospital
+      POSTGRES_USER: hospital
+      POSTGRES_PASSWORD: hospital
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital -d hospital"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/hospital
+      DB_USER: hospital
+      DB_PASSWORD: hospital
+    ports:
+      - "8080:8080"
+
+volumes:
+  dados-postgres:

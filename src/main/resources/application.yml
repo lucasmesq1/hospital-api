@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: hospital-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/hospital}
+    username: ${DB_USER:hospital}
+    password: ${DB_PASSWORD:hospital}
+  jpa:
+    open-in-view: false          # a sessão do banco não vaza para a camada web
+    hibernate:
+      ddl-auto: validate         # quem cria as tabelas é o Flyway, não o Hibernate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    # {vendor} = postgresql: scripts específicos do PostgreSQL (ex.: índices parciais)
+    locations: classpath:db/migration/common,classpath:db/migration/{vendor}
+
+server:
+  error:
+    include-message: never       # não devolve detalhes internos em erros inesperados
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# Usuários FICTÍCIOS de desenvolvimento. Em qualquer ambiente real, sobrescreva
+# pelas variáveis de ambiente abaixo (nunca versione senhas reais).
+app:
+  users:
+    recepcao-password: ${RECEPCAO_PASSWORD:recepcao123}
+    medico-password: ${MEDICO_PASSWORD:medico123}
+    admin-password: ${ADMIN_PASSWORD:admin123}

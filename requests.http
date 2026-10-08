@@ -1,0 +1,64 @@
+### Exemplos de chamadas. Use a extensão "REST Client" (VS Code) ou o IntelliJ.
+### Todos os dados abaixo são FICTÍCIOS.
+
+@host = http://localhost:8080
+# base64 de "recepcao:recepcao123" e "medico:medico123"
+@recepcao = Basic cmVjZXBjYW86cmVjZXBjYW8xMjM=
+@medico = Basic bWVkaWNvOm1lZGljbzEyMw==
+
+### 1. Cadastrar paciente (recepção)
+POST {{host}}/pacientes
+Authorization: {{recepcao}}
+Content-Type: application/json
+
+{
+  "nome": "Maria Fictícia da Silva",
+  "cpf": "52998224725",
+  "cns": "123456789010000",
+  "dataNascimento": "1980-05-10"
+}
+
+### 2. Buscar paciente
+GET {{host}}/pacientes/1
+Authorization: {{medico}}
+
+### 3. Listar pacientes por nome (paginado)
+GET {{host}}/pacientes?nome=maria&pagina=0&tamanho=10
+Authorization: {{medico}}
+
+### 4. Internar paciente (recepção)
+POST {{host}}/internacoes
+Authorization: {{recepcao}}
+Content-Type: application/json
+
+{
+  "pacienteId": 1,
+  "leito": "UTI-01"
+}
+
+### 5. Censo: quem está internado agora
+GET {{host}}/internacoes/em-aberto
+Authorization: {{medico}}
+
+### 6. Dar alta (somente médico)
+PATCH {{host}}/internacoes/1/alta
+Authorization: {{medico}}
+
+### 7. Histórico de internações do paciente
+GET {{host}}/pacientes/1/internacoes
+Authorization: {{medico}}
+
+### 8. Paciente em formato HL7 FHIR
+GET {{host}}/fhir/Patient/1
+Authorization: {{medico}}
+
+### 9. Erro de validação (CPF inválido) => 400
+POST {{host}}/pacientes
+Authorization: {{recepcao}}
+Content-Type: application/json
+
+{
+  "nome": "Fulano",
+  "cpf": "12345678900",
+  "dataNascimento": "1990-01-01"
+}

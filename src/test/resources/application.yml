@@ -1,0 +1,24 @@
+# Configuração dos testes: banco H2 em memória no modo PostgreSQL.
+# Não precisa de Docker. Os índices parciais (V4, só PostgreSQL) não rodam aqui;
+# as mesmas regras são cobertas pelas checagens do serviço.
+spring:
+  datasource:
+    url: jdbc:h2:mem:hospital;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    locations: classpath:db/migration/common
+
+app:
+  users:
+    recepcao-password: recepcao123
+    medico-password: medico123
+    admin-password: admin123
