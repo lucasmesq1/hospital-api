@@ -1,4 +1,4 @@
-# 🏥 Hospital API
+# Hospital API
 
 Um sistema de **backend** (sem telas) que guarda pacientes de um hospital e controla quem está internado em qual leito.
 
